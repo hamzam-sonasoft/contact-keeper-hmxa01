@@ -15,6 +15,11 @@ export default (state, action) => {
                 ...state,
                 contacts: [...state.contacts, action.payload]
             }
+        case UPDATE_CONTACT:
+            return {
+                ...state,
+                contacts: state.contacts.map(contact => contact.id === action.payload.id ? action.payload : contact)
+            }
         case DELETE_CONTACT:
             return {
                 ...state,
@@ -23,12 +28,25 @@ export default (state, action) => {
         case SET_CURRENT:
             return {
                 ...state,
-                contacts: action.payload
+                current: action.payload
             }
         case CLEAR_CURRENT:
             return {
                 ...state,
-                contacts: null
+                current: null
+            }
+        case FILTER_CONTACTS:
+            return {
+                ...state,
+                filtered: state.contacts.filter(contact => {
+                    const regex = new RegExp(`${action.payload}`, 'gi'); // go for gloal, i for insensitive (case-insensitive)
+                    return contact.name.match(regex) || contact.email.match(regex)
+                })
+            }
+        case CLEAR_FILTER:
+            return {
+                ...state,
+                filtered: null
             }
         default:
             return state;
